@@ -2,6 +2,7 @@
 'use strict';
 var fs = require('fs');
 var path = require('path');
+var gulp = require('gulp');
 var gutil = require('gulp-util');
 var clean = require('./');
 var expect = require('chai').expect;
@@ -202,5 +203,20 @@ describe('gulp-clean plugin', function () {
     }));
 
     stream.end();
+  });
+
+  it('should work with gulp', function(done) {
+    fs.mkdir('tmp/test', function () {
+      gulp.task('default', function() {
+        return gulp.src('tmp/test')
+          .pipe(clean());
+      });
+      gulp.start('default', function() {
+        fs.exists('tmp/test', function (exists) {
+          expect(exists).to.be.false;
+          done();
+        });
+      });
+    });
   });
 });
